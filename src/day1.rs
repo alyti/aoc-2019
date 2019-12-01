@@ -4,23 +4,23 @@
 */
 
 #[aoc_generator(day1)]
-fn input_generator(input: &str) -> Vec<f64> {
-    return input.split_whitespace().map(|x| x.parse::<f64>().unwrap()).collect();
+fn input_generator(input: &str) -> Vec<u32> {
+    return input.lines().map(|x| x.parse::<u32>().unwrap_or(0)).collect();
 }
 
-fn fuel_for_mass(mass: f64) -> u64 {
-    let result = ((mass / 3_f64).floor() as u64).checked_sub(2_u64);
+fn fuel_for_mass(mass: u32) -> u32 {
+    let result = (mass / 3).checked_sub(2);
     match result {
         Some(x) => return x,
         None => return 0,
     }
 }
 
-fn fuel_for_fuel(mut fuel: u64) -> u64 {
-    let mut final_fuel: u64 = 0;
+fn fuel_for_fuel(mut fuel: u32) -> u32 {
+    let mut final_fuel: u32 = 0;
     while fuel > 0 {  
         final_fuel += fuel;
-        fuel = fuel_for_mass(fuel as f64);
+        fuel = fuel_for_mass(fuel as u32);
     }
     return final_fuel;
 }
@@ -31,9 +31,8 @@ fn fuel_for_fuel(mut fuel: u64) -> u64 {
  *  take its mass, divide by three, round down, and subtract 2.
 */
 #[aoc(day1, part1)]
-fn solve_part1(input: &[f64]) -> u64 {
-    return input.iter().map(|&f| fuel_for_mass(f))
-        .try_fold(0u64, |acc, f| acc.checked_add(f)).unwrap();
+fn solve_part1(input: &[u32]) -> u32 {
+    return input.iter().map(|&f| fuel_for_mass(f)).sum();
 }
 
 /*
@@ -45,9 +44,8 @@ fn solve_part1(input: &[f64]) -> u64 {
  *  which has no mass and is outside the scope of this calculation.
 */
 #[aoc(day1, part2)]
-fn solve_part2(input: &[f64]) -> u64 {
-    return input.iter().map(|&f| fuel_for_fuel(fuel_for_mass(f)))
-        .try_fold(0u64, |acc, f| acc.checked_add(f)).unwrap();
+fn solve_part2(input: &[u32]) -> u32 {
+    return input.iter().map(|&f| fuel_for_fuel(fuel_for_mass(f))).sum();
 }
 
 #[cfg(test)]

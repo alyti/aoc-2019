@@ -1,0 +1,10 @@
+[package]
+name = "aoc2019"
+version = "0.1.0"
+authors = ["Alyssa <alticodes@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+aoc-runner = "0.2.2"
+aoc-runner-derive = "0.2.2"
+rust-crypto = "^0.2"

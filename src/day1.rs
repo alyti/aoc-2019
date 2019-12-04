@@ -62,7 +62,7 @@ mod tests {
      * For a mass of 100756, the fuel required is 33583.
     */
     #[test]
-    fn example1() {
+    fn day1_example1() {
         assert_eq!(solve_part1_iter(&input_generator("1969\n100756")), 34237);
     }
     
@@ -77,7 +77,7 @@ mod tests {
      *  33583 + 11192 + 3728 + 1240 + 411 + 135 + 43 + 12 + 2 = 50346.
     */
     #[test]
-    fn example2() {
+    fn day1_example2() {
         assert_eq!(solve_part2_iter(&input_generator("1969\n100756")), 51312);
     }
 }

@@ -107,13 +107,13 @@ mod tests {
 
     // 1,0,0,0,99 becomes 2,0,0,0,99
     #[test]
-    fn example1() {
+    fn day1_example1() {
         assert_eq!(solve_part1_loop(&input_generator("1,0,0,0,99")), 2);
     }
 
     // 1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.
     #[test]
-    fn example2() {
+    fn day1_example2() {
         assert_eq!(run_intcode(input_generator("1,1,1,4,99,5,6,0,99"), 1, 1), 30);
     }
 }

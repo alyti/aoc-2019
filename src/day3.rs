@@ -87,8 +87,8 @@ fn input_generator(input: &str) -> Vec<Wire> {
  * While the wires do technically cross right at the central port where they both start,
  *  this point does not count, nor does a wire count as crossing with itself.
 */
-#[aoc(day3, part1)]
-fn solve_part1(input: &[Wire]) -> Option<i32> {
+#[aoc(day3, part1, Generators)]
+fn solve_part1_gen(input: &[Wire]) -> Option<i32> {
     let mut grid = std::collections::HashMap::<i32, std::collections::HashSet<i32>>::new();
 	for (x, y) in iter_wire(&input[0]) {
 		grid.entry(y).or_default().insert(x);
@@ -113,8 +113,8 @@ fn solve_part1(input: &[Wire]) -> Option<i32> {
  *  use the steps value from the first time it visits that position when
  *  calculating the total value of a specific intersection.
 */
-#[aoc(day3, part2)]
-fn solve_part2(input: &[Wire]) -> Option<usize> {
+#[aoc(day3, part2, Generators)]
+fn solve_part2_gen(input: &[Wire]) -> Option<usize> {
 	let mut grid = std::collections::HashMap::<i32, std::collections::HashMap<i32, usize>>::new();
 	for (dist, (x, y)) in iter_wire(&input[0]).enumerate() {
 		grid.entry(y).or_default().insert(x, dist);
@@ -140,8 +140,8 @@ mod tests {
     fn day3_example1() {
         let input = &input_generator(
             "R75,D30,R83,U83,L12,D49,R71,U7,L72\nU62,R66,U55,R34,D71,R55,D58,R83");
-        assert_eq!(solve_part1(input), Some(159));
-        assert_eq!(solve_part2(input), Some(610));
+        assert_eq!(solve_part1_gen(input), Some(159));
+        assert_eq!(solve_part2_gen(input), Some(610));
     }
 
     // R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
@@ -151,7 +151,7 @@ mod tests {
     fn day3_example2() {
         let input = &input_generator(
             "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51\nU98,R91,D20,R16,D67,R40,U7,R15,U6,R7");
-        assert_eq!(solve_part1(input), Some(135));
-        assert_eq!(solve_part2(input), Some(410));
+        assert_eq!(solve_part1_gen(input), Some(135));
+        assert_eq!(solve_part2_gen(input), Some(410));
     }
 }

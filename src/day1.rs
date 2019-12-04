@@ -34,8 +34,8 @@ fn fuel_for_fuel(mut fuel: u32) -> u32 {
  * Specifically, to find the fuel required for a module,
  *  take its mass, divide by three, round down, and subtract 2.
 */
-#[aoc(day1, part1)]
-fn solve_part1(input: &[u32]) -> u32 {
+#[aoc(day1, part1, Iterator)]
+fn solve_part1_iter(input: &[u32]) -> u32 {
     return input.iter().map(|&f| fuel_for_mass(f)).sum();
 }
 
@@ -47,8 +47,8 @@ fn solve_part1(input: &[u32]) -> u32 {
  *  the remaining mass, if any, is instead handled by wishing really hard,
  *  which has no mass and is outside the scope of this calculation.
 */
-#[aoc(day1, part2)]
-fn solve_part2(input: &[u32]) -> u32 {
+#[aoc(day1, part2, Iterator)]
+fn solve_part2_iter(input: &[u32]) -> u32 {
     return input.iter().map(|&f| fuel_for_fuel(fuel_for_mass(f))).sum();
 }
 
@@ -63,7 +63,7 @@ mod tests {
     */
     #[test]
     fn example1() {
-        assert_eq!(solve_part1(&input_generator("1969\n100756")), 34237);
+        assert_eq!(solve_part1_iter(&input_generator("1969\n100756")), 34237);
     }
     
     /*
@@ -78,6 +78,6 @@ mod tests {
     */
     #[test]
     fn example2() {
-        assert_eq!(solve_part2(&input_generator("1969\n100756")), 51312);
+        assert_eq!(solve_part2_iter(&input_generator("1969\n100756")), 51312);
     }
 }

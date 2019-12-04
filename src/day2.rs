@@ -67,8 +67,8 @@ fn run_intcode(mut inputs: Vec<usize>, a: usize, b: usize) -> usize {
  *  replace position 1 with the value 12 and replace position 2 with the value 2. 
  * What value is left at position 0 after the program halts?
 */
-#[aoc(day2, part1)]
-fn solve_part1(input: &[usize]) -> usize {
+#[aoc(day2, part1, Loop)]
+fn solve_part1_loop(input: &[usize]) -> usize {
     return run_intcode(input.to_vec(), 12, 2);
 }
 
@@ -86,8 +86,8 @@ fn solve_part1(input: &[usize]) -> usize {
  *
  * Find the input noun and verb that cause the program to produce the output 19690720.
 */
-#[aoc(day2, part2)]
-fn solve_part2(input: &[usize]) -> Result<usize, &str> {
+#[aoc(day2, part2, Loop)]
+fn solve_part2_loop(input: &[usize]) -> Result<usize, &str> {
     // Pretty crappy way of doing it but I can't think of a better solution at the moment...
     // Takes whopping 1.7ms, so slow :c 
     for a in 0..=99 {
@@ -108,7 +108,7 @@ mod tests {
     // 1,0,0,0,99 becomes 2,0,0,0,99
     #[test]
     fn example1() {
-        assert_eq!(solve_part1(&input_generator("1,0,0,0,99")), 2);
+        assert_eq!(solve_part1_loop(&input_generator("1,0,0,0,99")), 2);
     }
 
     // 1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.

@@ -1,14 +1,14 @@
 /*
  * Link: https://adventofcode.com/2019/day/5
  * Day 5: Sunny with a Chance of Asteroids
- * 
- * You're starting to sweat as the ship makes its way toward Mercury. 
+ *
+ * You're starting to sweat as the ship makes its way toward Mercury.
  * The Elves suggest that you get the air conditioner working
- *  by upgrading your ship computer to support 
+ *  by upgrading your ship computer to support
  *  the Thermal Environment Supervision Terminal.
  *
  * The Thermal Environment Supervision Terminal (TEST)
- *  starts by running a diagnostic program (your puzzle input). 
+ *  starts by running a diagnostic program (your puzzle input).
 */
 
 use failure::Error;
@@ -35,8 +35,8 @@ fn input_generator(input: &str) -> Vec<i32> {
 // Magic smoke
 fn run_intcode(code: &mut Vec<i32>, input: &[i32]) -> Result<Vec<i32>, IntcodeError> {
     let mut ptr = 0;
-	let mut input = input.iter();
-	let mut output = Vec::new();
+    let mut input = input.iter();
+    let mut output = Vec::new();
 
     loop {
         let opcode = code[ptr];
@@ -58,53 +58,53 @@ fn run_intcode(code: &mut Vec<i32>, input: &[i32]) -> Result<Vec<i32>, IntcodeEr
             // handle add opcode
             1 => {
                 let arg1 = _read(1);
-				let arg2 = _read(2);
-				_write(code, 3, arg1 + arg2);
-				ptr += 4;
+                let arg2 = _read(2);
+                _write(code, 3, arg1 + arg2);
+                ptr += 4;
             }
             // handle multiply opcode
             2 => {
                 let arg1 = _read(1);
                 let arg2 = _read(2);
-				_write(code, 3, arg1 * arg2);
-				ptr += 4;
+                _write(code, 3, arg1 * arg2);
+                ptr += 4;
             }
             3 => {
                 let word = match input.next() {
                     Some(x) => *x,
-                    None => return Err(IntcodeError::InputEmpty{position: ptr}) 
+                    None => return Err(IntcodeError::InputEmpty{position: ptr})
                 };
-				_write(code, 1, word);
-				ptr += 2;
-			}
-			4 => {
-				output.push(_read(1));
-				ptr += 2;
+                _write(code, 1, word);
+                ptr += 2;
+            }
+            4 => {
+                output.push(_read(1));
+                ptr += 2;
             }
             5 => {
-				if _read(1) != 0 {
-					ptr = _read(2) as usize;
-				} else {
-					ptr += 3;
-				}
-			}
-			6 => {
-				if _read(1) == 0 {
-					ptr = _read(2) as usize;
-				} else {
-					ptr += 3;
-				}
-			}
-			7 => {
-				let result = if _read(1) < _read(2) { 1 } else { 0 };
-				_write(code, 3, result);
-				ptr += 4;
-			}
-			8 => {
-				let result = if _read(1) == _read(2) { 1 } else { 0 };
-				_write(code, 3, result);
-				ptr += 4;
-			}
+                if _read(1) != 0 {
+                    ptr = _read(2) as usize;
+                } else {
+                    ptr += 3;
+                }
+            }
+            6 => {
+                if _read(1) == 0 {
+                    ptr = _read(2) as usize;
+                } else {
+                    ptr += 3;
+                }
+            }
+            7 => {
+                let result = if _read(1) < _read(2) { 1 } else { 0 };
+                _write(code, 3, result);
+                ptr += 4;
+            }
+            8 => {
+                let result = if _read(1) == _read(2) { 1 } else { 0 };
+                _write(code, 3, result);
+                ptr += 4;
+            }
             // handle stopcode
             99 => return Ok(output),
             // behave, user.
@@ -116,9 +116,9 @@ fn run_intcode(code: &mut Vec<i32>, input: &[i32]) -> Result<Vec<i32>, IntcodeEr
 /*
  * Finally, the program will output a diagnostic code and immediately halt.
  * This final output isn't an error;
- *  an output followed immediately by a halt means the program finished. 
+ *  an output followed immediately by a halt means the program finished.
  * If all outputs were zero except the diagnostic code, the diagnostic program ran successfully.
- * 
+ *
  * After providing 1 to the only input instruction and passing all the tests,
  *  what diagnostic code does the program produce?
 */
@@ -129,19 +129,19 @@ fn solve_part1_loop(input: &[i32]) -> Result<i32, Error> {
 }
 
 /*
- * The air conditioner comes online! 
+ * The air conditioner comes online!
  * Its cold air feels good for a while,
  *  but then the TEST alarms start to go off.
  * Since the air conditioner can't vent its heat anywhere but
- *  back into the spacecraft, 
+ *  back into the spacecraft,
  *  it's actually making the air inside the ship warmer.
- *  
+ *
  * Instead, you'll need to use the TEST to extend the thermal radiators.
  * Fortunately, the diagnostic program (your puzzle input) is already
  *  equipped for this.
  * Unfortunately, your Intcode computer is not.
- * 
- * This time, when the TEST diagnostic program runs its 
+ *
+ * This time, when the TEST diagnostic program runs its
  *  input instruction to get the ID of the system to test,
  *  provide it 5, the ID for the ship's thermal radiator controller.
  * This diagnostic test suite only outputs one number,
@@ -160,7 +160,7 @@ mod tests {
     use super::*;
 
     struct Run {
-        pub code: String, 
+        pub code: String,
         pub inputs: Vec<i32>,
         pub expected_success: bool,
         pub expected_output: Vec<i32>,
@@ -206,7 +206,7 @@ mod tests {
                 expected_success: true,
                 expected_output: vec![1],
             },
-            
+
             Run{
                 code: "3,3,1105,-1,9,1101,0,0,12,4,12,99,1".to_owned(),
                 inputs: vec![0],

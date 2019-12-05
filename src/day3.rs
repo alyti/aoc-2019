@@ -28,30 +28,30 @@ struct Wire{
 }
 
 fn iter_wire<'a>(wire: &'a Wire) -> impl Iterator<Item = (i32, i32)> + 'a {
-	gen_iter::GenIter(move || {
-		let mut x = 0;
-		let mut y = 0;
-		for s in &wire.cmnds {
-			for _ in 0..s.distance {
-				match s.direction {
-					Direction::Up => {
-						y -= 1;
-					}
-					Direction::Down => {
-						y += 1;
-					}
-					Direction::Left => {
-						x -= 1;
-					}
-					Direction::Right => {
-						x += 1;
+    gen_iter::GenIter(move || {
+        let mut x = 0;
+        let mut y = 0;
+        for s in &wire.cmnds {
+            for _ in 0..s.distance {
+                match s.direction {
+                    Direction::Up => {
+                        y -= 1;
+                    }
+                    Direction::Down => {
+                        y += 1;
+                    }
+                    Direction::Left => {
+                        x -= 1;
+                    }
+                    Direction::Right => {
+                        x += 1;
                     },
                     Direction::Unknown => (),
-				}
-				yield (x, y);
-			}
-		}
-	})
+                }
+                yield (x, y);
+            }
+        }
+    })
 }
 
 #[aoc_generator(day3)]
@@ -90,18 +90,18 @@ fn input_generator(input: &str) -> Vec<Wire> {
 #[aoc(day3, part1, Generators)]
 fn solve_part1_gen(input: &[Wire]) -> Option<i32> {
     let mut grid = std::collections::HashMap::<i32, std::collections::HashSet<i32>>::new();
-	for (x, y) in iter_wire(&input[0]) {
-		grid.entry(y).or_default().insert(x);
-	}
-	let mut cross = Vec::new();
-	for (x, y) in iter_wire(&input[1]) {
-		if let Some(row) = grid.get(&y) {
-			if row.contains(&x) {
-				cross.push(x.abs() + y.abs());
-			}
-		}
-	}
-	cross.into_iter().filter(|d| d > &0).min()
+    for (x, y) in iter_wire(&input[0]) {
+        grid.entry(y).or_default().insert(x);
+    }
+    let mut cross = Vec::new();
+    for (x, y) in iter_wire(&input[1]) {
+        if let Some(row) = grid.get(&y) {
+            if row.contains(&x) {
+                cross.push(x.abs() + y.abs());
+            }
+        }
+    }
+    cross.into_iter().filter(|d| d > &0).min()
 }
 
 /*
@@ -115,19 +115,19 @@ fn solve_part1_gen(input: &[Wire]) -> Option<i32> {
 */
 #[aoc(day3, part2, Generators)]
 fn solve_part2_gen(input: &[Wire]) -> Option<usize> {
-	let mut grid = std::collections::HashMap::<i32, std::collections::HashMap<i32, usize>>::new();
-	for (dist, (x, y)) in iter_wire(&input[0]).enumerate() {
-		grid.entry(y).or_default().insert(x, dist);
-	}
-	let mut cross = Vec::new();
-	for (dist, (x, y)) in iter_wire(&input[1]).enumerate() {
-		if let Some(row) = grid.get(&y) {
-			if let Some(other) = row.get(&x) {
-				cross.push(dist + other);
-			}
-		}
-	}
-	cross.into_iter().filter(|d| d > &0).min().map(|d| d + 2)
+    let mut grid = std::collections::HashMap::<i32, std::collections::HashMap<i32, usize>>::new();
+    for (dist, (x, y)) in iter_wire(&input[0]).enumerate() {
+        grid.entry(y).or_default().insert(x, dist);
+    }
+    let mut cross = Vec::new();
+    for (dist, (x, y)) in iter_wire(&input[1]).enumerate() {
+        if let Some(row) = grid.get(&y) {
+            if let Some(other) = row.get(&x) {
+                cross.push(dist + other);
+            }
+        }
+    }
+    cross.into_iter().filter(|d| d > &0).min().map(|d| d + 2)
 }
 #[cfg(test)]
 mod tests {

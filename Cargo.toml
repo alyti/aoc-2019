@@ -9,3 +9,4 @@ aoc-runner = "0.2.2"
 aoc-runner-derive = "0.2.2"
 rust-crypto = "^0.2"
 gen-iter = { git = "https://github.com/sumeet/gen-iter" }
+failure = "^0.1"

@@ -13,49 +13,17 @@
  *     surely there are enough spare parts up there to build a new Intcode computer!"
 */
 
-#[aoc_generator(day2)]
-fn input_generator(input: &str) -> Vec<usize> {
-    return input.split_terminator(",").map(|x| x.parse::<usize>().unwrap_or(0)).collect();
-}
+use std::str::FromStr;
+use crate::util::intcode::IntcodeVM;
 
 // Magic smoke
-fn run_intcode(mut inputs: Vec<usize>, a: usize, b: usize) -> usize {
-    let mut ptr: usize = 0;
-    let inputs = inputs.as_mut_slice();
-
-    inputs[1] = a;
-    inputs[2] = b;
-
-    loop {
-        let opcode = inputs[ptr];
-
-        match opcode {
-            // handle add opcode
-            1 => {
-                let arg1 = inputs[inputs[ptr + 1] as usize];
-                let arg2 = inputs[inputs[ptr + 2] as usize];
-                inputs[inputs[ptr + 3] as usize] = arg1 + arg2;
-            }
-            // handle multiply opcode
-            2 => {
-                let arg1 = inputs[inputs[ptr + 1] as usize];
-                let arg2 = inputs[inputs[ptr + 2] as usize];
-                inputs[inputs[ptr + 3] as usize] = arg1 * arg2;
-            }
-            // handle stopcode
-            99 => {
-                break;
-            }
-            // behave, user.
-            _ => {
-                panic!("Unknown opcode at pos {}: {}", ptr, opcode);
-            }
-        }
-
-        ptr = ptr + 4;
-    }
-
-    return inputs[0];
+fn run_intcode(inputs: &str, a: i32, b: i32) -> i32 {
+    let mut vm = IntcodeVM::from_str(inputs).unwrap();
+    let state = vm.state_mut();
+    state[1] = a;
+    state[2] = b;
+    vm.execute().unwrap();
+    *vm.state().first().unwrap()
 }
 
 /*
@@ -68,8 +36,8 @@ fn run_intcode(mut inputs: Vec<usize>, a: usize, b: usize) -> usize {
  * What value is left at position 0 after the program halts?
 */
 #[aoc(day2, part1, Loop)]
-fn solve_part1_loop(input: &[usize]) -> usize {
-    return run_intcode(input.to_vec(), 12, 2);
+fn solve_part1_loop(input: &str) -> i32 {
+    return run_intcode(input, 12, 2);
 }
 
 /*
@@ -87,12 +55,12 @@ fn solve_part1_loop(input: &[usize]) -> usize {
  * Find the input noun and verb that cause the program to produce the output 19690720.
 */
 #[aoc(day2, part2, Loop)]
-fn solve_part2_loop(input: &[usize]) -> Result<usize, &str> {
+fn solve_part2_loop(input: &str) -> Result<usize, &str> {
     // Pretty crappy way of doing it but I can't think of a better solution at the moment...
     // Takes whopping 1.7ms, so slow :c 
     for a in 0..=99 {
         for b in 0..=99 { 
-            if run_intcode(input.to_vec(), a, b) == 19_690_720 {
+            if run_intcode(input, a, b) == 19_690_720 {
                 return Ok((100 * a + b) as usize)
             }
         }
@@ -108,12 +76,12 @@ mod tests {
     // 1,0,0,0,99 becomes 2,0,0,0,99
     #[test]
     fn day2_example1() {
-        assert_eq!(run_intcode(input_generator("1,0,0,0,99"), 0, 0), 2);
+        assert_eq!(run_intcode("1,0,0,0,99", 0, 0), 2);
     }
 
     // 1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.
     #[test]
     fn day2_example2() {
-        assert_eq!(run_intcode(input_generator("1,1,1,4,99,5,6,0,99"), 1, 1), 30);
+        assert_eq!(run_intcode("1,1,1,4,99,5,6,0,99", 1, 1), 30);
     }
 }

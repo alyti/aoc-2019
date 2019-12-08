@@ -12,105 +12,13 @@
 */
 
 use failure::Error;
-
-#[derive(Debug, Fail)]
-enum IntcodeError {
-    #[fail(display = "unknown opcode `{}` met at {}", opcode, position)]
-    UnknownOpcode {
-        position: usize,
-        opcode: i32,
-    },
-
-    #[fail(display = "input ran out of things to say at {}", position)]
-    InputEmpty{
-        position: usize,
-    }
-}
-
-#[aoc_generator(day5)]
-fn input_generator(input: &str) -> Vec<i32> {
-    return input.split_terminator(",").map(|x| x.parse::<i32>().unwrap_or(0)).collect();
-}
+use std::str::FromStr;
+use crate::util::intcode::{IntcodeVM, IntcodeError};
 
 // Magic smoke
-fn run_intcode(code: &mut Vec<i32>, input: &[i32]) -> Result<Vec<i32>, IntcodeError> {
-    let mut ptr = 0;
-    let mut input = input.iter();
-    let mut output = Vec::new();
-
-    loop {
-        let opcode = code[ptr];
-
-        let _read = |offset| -> i32 {
-            let mut mode = opcode / 100;
-            for _ in 1..offset {
-                mode /= 10;
-            }
-            let value = code[ptr + offset];
-            if mode % 10 > 0  { value } else { code[value as usize] }
-        };
-
-        let _write = |code: &mut Vec<i32>, offset, value| {
-            let pos = code[ptr + offset] as usize;
-            code[pos] = value
-        };
-        match opcode % 100 {
-            // handle add opcode
-            1 => {
-                let arg1 = _read(1);
-                let arg2 = _read(2);
-                _write(code, 3, arg1 + arg2);
-                ptr += 4;
-            }
-            // handle multiply opcode
-            2 => {
-                let arg1 = _read(1);
-                let arg2 = _read(2);
-                _write(code, 3, arg1 * arg2);
-                ptr += 4;
-            }
-            3 => {
-                let word = match input.next() {
-                    Some(x) => *x,
-                    None => return Err(IntcodeError::InputEmpty{position: ptr})
-                };
-                _write(code, 1, word);
-                ptr += 2;
-            }
-            4 => {
-                output.push(_read(1));
-                ptr += 2;
-            }
-            5 => {
-                if _read(1) != 0 {
-                    ptr = _read(2) as usize;
-                } else {
-                    ptr += 3;
-                }
-            }
-            6 => {
-                if _read(1) == 0 {
-                    ptr = _read(2) as usize;
-                } else {
-                    ptr += 3;
-                }
-            }
-            7 => {
-                let result = if _read(1) < _read(2) { 1 } else { 0 };
-                _write(code, 3, result);
-                ptr += 4;
-            }
-            8 => {
-                let result = if _read(1) == _read(2) { 1 } else { 0 };
-                _write(code, 3, result);
-                ptr += 4;
-            }
-            // handle stopcode
-            99 => return Ok(output),
-            // behave, user.
-            _ => return Err(IntcodeError::UnknownOpcode{opcode: code[ptr], position: ptr})
-        }
-    }
+pub fn run_intcode(code: &str, input: &[i32]) -> Result<Vec<i32>, IntcodeError> {
+    let mut vm = IntcodeVM::from_str(code).unwrap();
+    vm.simple_input(input.to_vec()).execute_and_collect()
 }
 
 /*
@@ -123,8 +31,8 @@ fn run_intcode(code: &mut Vec<i32>, input: &[i32]) -> Result<Vec<i32>, IntcodeEr
  *  what diagnostic code does the program produce?
 */
 #[aoc(day5, part1, Loop)]
-fn solve_part1_loop(input: &[i32]) -> Result<i32, Error> {
-    let output = run_intcode(&mut input.to_vec(), &[1])?;
+fn solve_part1_loop(input: &str) -> Result<i32, Error> {
+    let output = run_intcode(input, &[1])?;
     Ok(*output.last().expect("expected output to contain at least one value"))
 }
 
@@ -148,9 +56,9 @@ fn solve_part1_loop(input: &[i32]) -> Result<i32, Error> {
  *  the diagnostic code.
 */
 #[aoc(day5, part2, Loop)]
-fn solve_part2_loop(input: &[i32]) -> Result<i32, Error> {
+fn solve_part2_loop(input: &str) -> Result<i32, Error> {
     // I guess part2 can be considered turing complete? Fun times.
-    let output = run_intcode(&mut input.to_vec(), &[5])?;
+    let output = run_intcode(input, &[5])?;
     Ok(*output.last().expect("expected output to contain at least one value"))
 }
 
@@ -248,8 +156,7 @@ mod tests {
             },
         ];
         for (index, run) in runs.iter().enumerate() {
-            let input = input_generator(run.code.as_str());
-            let output = run_intcode(&mut input.to_vec(), run.inputs.as_slice());
+            let output = run_intcode(run.code.as_str(), run.inputs.as_slice());
             assert_eq!(run.expected_success, output.is_ok(), "Run #{}, success check", index);
             assert_eq!(run.expected_output, output.unwrap_or_default(), "Run #{}, output check", index);
         }

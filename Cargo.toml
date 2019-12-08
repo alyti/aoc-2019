@@ -7,6 +7,12 @@ edition = "2018"
 [dependencies]
 aoc-runner = "0.2.2"
 aoc-runner-derive = "0.2.2"
-rust-crypto = "^0.2"
+
+# day3 dependency
 gen-iter = { git = "https://github.com/sumeet/gen-iter" }
+
+# day5 and onwards
 failure = "^0.1"
+
+# day7 dependencies
+permutohedron = "0.2"

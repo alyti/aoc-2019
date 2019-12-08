@@ -117,4 +117,3 @@ fn solve_part2_map(vm: &IntcodeVM) -> Option<i32> {
         })
         .max()
 }
-

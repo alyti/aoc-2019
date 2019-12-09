@@ -13,12 +13,11 @@
 
 use failure::Error;
 use std::str::FromStr;
-use crate::util::intcode::{IntcodeVM, IntcodeError};
+use crate::util::intcode::IntcodeVM;
 
-// Magic smoke
-pub fn run_intcode(code: &str, input: &[i32]) -> Result<Vec<i32>, IntcodeError> {
-    let mut vm = IntcodeVM::from_str(code).unwrap();
-    vm.simple_input(input.to_vec()).execute_and_collect()
+#[aoc_generator(day5)]
+fn input_generator(input: &str) -> IntcodeVM {
+    IntcodeVM::from_str(input).unwrap()
 }
 
 /*
@@ -31,8 +30,8 @@ pub fn run_intcode(code: &str, input: &[i32]) -> Result<Vec<i32>, IntcodeError> 
  *  what diagnostic code does the program produce?
 */
 #[aoc(day5, part1, Loop)]
-fn solve_part1_loop(input: &str) -> Result<i32, Error> {
-    let output = run_intcode(input, &[1])?;
+fn solve_part1_loop(vm: &IntcodeVM) -> Result<i64, Error> {
+    let output = vm.clone().simple_input(vec![1]).execute_and_collect()?;
     Ok(*output.last().expect("expected output to contain at least one value"))
 }
 
@@ -56,9 +55,8 @@ fn solve_part1_loop(input: &str) -> Result<i32, Error> {
  *  the diagnostic code.
 */
 #[aoc(day5, part2, Loop)]
-fn solve_part2_loop(input: &str) -> Result<i32, Error> {
-    // I guess part2 can be considered turing complete? Fun times.
-    let output = run_intcode(input, &[5])?;
+fn solve_part2_loop(vm: &IntcodeVM) -> Result<i64, Error> {
+    let output = vm.clone().simple_input(vec![5]).execute_and_collect()?;
     Ok(*output.last().expect("expected output to contain at least one value"))
 }
 
@@ -69,13 +67,13 @@ mod tests {
 
     struct Run {
         pub code: String,
-        pub inputs: Vec<i32>,
+        pub inputs: Vec<i64>,
         pub expected_success: bool,
-        pub expected_output: Vec<i32>,
+        pub expected_output: Vec<i64>,
     }
 
     #[test]
-    fn day5_examples() {
+    fn day5_examples() -> Result<(), Error> {
         let runs = vec![
             Run{
                 code: "3,9,8,9,10,9,4,9,99,-1,8".to_owned(),
@@ -156,9 +154,12 @@ mod tests {
             },
         ];
         for (index, run) in runs.iter().enumerate() {
-            let output = run_intcode(run.code.as_str(), run.inputs.as_slice());
+            let mut vm = IntcodeVM::from_str(run.code.as_str())?;
+            vm.simple_input(run.inputs.clone());
+            let output = vm.execute_and_collect();
             assert_eq!(run.expected_success, output.is_ok(), "Run #{}, success check", index);
             assert_eq!(run.expected_output, output.unwrap_or_default(), "Run #{}, output check", index);
         }
+        Ok(())
     }
 }

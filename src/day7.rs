@@ -43,8 +43,8 @@ fn input_generator(input: &str) -> IntcodeVM {
  * Make sure that memory is not shared or reused between copies of the program.
 */
 #[aoc(day7, part1, Map)]
-fn solve_part1_map(vm: &IntcodeVM) -> Option<i32> {
-    Heap::new(&mut vec![0, 1, 2, 3, 4]).collect::<Vec<Vec<i32>>>().iter()
+fn solve_part1_map(vm: &IntcodeVM) -> Option<i64> {
+    Heap::new(&mut vec![0, 1, 2, 3, 4]).collect::<Vec<Vec<i64>>>().iter()
         .map(|stages| {
             let mut power = 0;
             for stage in stages.iter() {
@@ -87,8 +87,8 @@ fn solve_part1_map(vm: &IntcodeVM) -> Option<i32> {
  *  the thrusters using the new phase settings and feedback loop arrangement.
 */
 #[aoc(day7, part2, Map)]
-fn solve_part2_map(vm: &IntcodeVM) -> Option<i32> {
-    Heap::new(&mut vec![5, 6, 7, 8, 9]).collect::<Vec<Vec<i32>>>().iter()
+fn solve_part2_map(vm: &IntcodeVM) -> Option<i64> {
+    Heap::new(&mut vec![5, 6, 7, 8, 9]).collect::<Vec<Vec<i64>>>().iter()
         .map(|stages| {
             let mut rx = std::collections::VecDeque::new();
             let mut tx = std::collections::VecDeque::new();

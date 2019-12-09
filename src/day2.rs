@@ -17,11 +17,11 @@ use std::str::FromStr;
 use crate::util::intcode::IntcodeVM;
 
 // Magic smoke
-fn run_intcode(inputs: &str, a: i32, b: i32) -> i32 {
+fn run_intcode(inputs: &str, a: i64, b: i64) -> i64 {
     let mut vm = IntcodeVM::from_str(inputs).unwrap();
     let state = vm.state_mut();
-    state[1] = a;
-    state[2] = b;
+    state.entry(1).and_modify(|e| *e = a);
+    state.entry(2).and_modify(|e| *e = b);
     vm.execute().unwrap();
     *vm.state().first().unwrap()
 }
@@ -36,7 +36,7 @@ fn run_intcode(inputs: &str, a: i32, b: i32) -> i32 {
  * What value is left at position 0 after the program halts?
 */
 #[aoc(day2, part1, Loop)]
-fn solve_part1_loop(input: &str) -> i32 {
+fn solve_part1_loop(input: &str) -> i64 {
     return run_intcode(input, 12, 2);
 }
 

@@ -1,4 +1,4 @@
-// Implements the Space Image Format from day 8.
+//! Implements the Space Image Format from day 8.
 use std::str;
 
 pub type Row = Vec<u8>;

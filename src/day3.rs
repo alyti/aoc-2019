@@ -1,11 +1,9 @@
-/*
- * Link: https://adventofcode.com/2019/day/3
- * Day 3: Crossed Wires 
- * 
- * The gravity assist was successful, and you're well on your way to the Venus refuelling station.
- * During the rush back on Earth, the fuel management system wasn't completely installed,
- *  so that's next on the priority list.
-*/
+//! Link: https://adventofcode.com/2019/day/3
+//! Day 3: Crossed Wires 
+//! 
+//! The gravity assist was successful, and you're well on your way to the Venus refuelling station.
+//! During the rush back on Earth, the fuel management system wasn't completely installed,
+//!  so that's next on the priority list.
 
 #[derive(Debug)]
 enum Direction {
@@ -75,18 +73,16 @@ fn input_generator(input: &str) -> Vec<Wire> {
     }).collect()
 }
 
-/*
- * Opening the front panel reveals a jumble of wires. 
- * Specifically, two wires are connected to a central port and extend outward on a grid. 
- * You trace the path each wire takes as it leaves the central port,
- *  one wire per line of text (your puzzle input).
- * 
- * The wires twist and turn, but the two wires occasionally cross paths.
- * To fix the circuit, you need to find the intersection point closest to the central port. 
- * Because the wires are on a grid, use the Manhattan distance for this measurement. 
- * While the wires do technically cross right at the central port where they both start,
- *  this point does not count, nor does a wire count as crossing with itself.
-*/
+// Opening the front panel reveals a jumble of wires. 
+// Specifically, two wires are connected to a central port and extend outward on a grid. 
+// You trace the path each wire takes as it leaves the central port,
+//  one wire per line of text (your puzzle input).
+// 
+// The wires twist and turn, but the two wires occasionally cross paths.
+// To fix the circuit, you need to find the intersection point closest to the central port. 
+// Because the wires are on a grid, use the Manhattan distance for this measurement. 
+// While the wires do technically cross right at the central port where they both start,
+//  this point does not count, nor does a wire count as crossing with itself.
 #[aoc(day3, part1, Generators)]
 fn solve_part1_gen(input: &[Wire]) -> Option<i32> {
     let mut grid = std::collections::HashMap::<i32, std::collections::HashSet<i32>>::new();
@@ -104,15 +100,13 @@ fn solve_part1_gen(input: &[Wire]) -> Option<i32> {
     cross.into_iter().filter(|d| d > &0).min()
 }
 
-/*
- * It turns out that this circuit is very timing-sensitive; you actually need to minimize the signal delay.
- * 
- * To do this, calculate the number of steps each wire takes to reach each intersection;
- *  choose the intersection where the sum of both wires' steps is lowest. 
- * If a wire visits a position on the grid multiple times,
- *  use the steps value from the first time it visits that position when
- *  calculating the total value of a specific intersection.
-*/
+// It turns out that this circuit is very timing-sensitive; you actually need to minimize the signal delay.
+// 
+// To do this, calculate the number of steps each wire takes to reach each intersection;
+//  choose the intersection where the sum of both wires' steps is lowest. 
+// If a wire visits a position on the grid multiple times,
+//  use the steps value from the first time it visits that position when
+//  calculating the total value of a specific intersection.
 #[aoc(day3, part2, Generators)]
 fn solve_part2_gen(input: &[Wire]) -> Option<usize> {
     let mut grid = std::collections::HashMap::<i32, std::collections::HashMap<i32, usize>>::new();

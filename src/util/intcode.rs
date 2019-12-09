@@ -66,24 +66,24 @@ pub struct IntcodeVM{
 }
 
 impl IntcodeVM {
-    // Creates an IntcodeVM with given code as the initial state.
+    /// Creates an IntcodeVM with given code as the initial state.
     pub fn new(code: Vec<DWord>) -> IntcodeVM {
         let (output, input) = mpsc::channel();
         IntcodeVM{state: code.into_iter().enumerate().collect(), input, output, timeout: None}
     }
 
-    // Returns current state of the VM.
+    /// Returns current state of the VM.
     pub fn state(self) -> Vec<DWord> {
         self.state.values().cloned().collect()
     }
 
-    // Returns current state of the VM.
+    /// Returns current state of the VM.
     pub fn state_mut(&mut self) -> &mut BTreeMap<usize, DWord> {
         &mut self.state
     }
 
-    // Creates a thread that populates this VM's input with provided static dataset.
-    // Useful for when you don't need the input channel mechanic.
+    /// Creates a thread that populates this VM's input with provided static dataset.
+    /// Useful for when you don't need the input channel mechanic.
     pub fn simple_input<'a>(&'a mut self, vec: Vec<DWord>) -> &'a mut Self {
         let (tx, rx) = mpsc::channel();
         self.input = rx;
@@ -96,24 +96,25 @@ impl IntcodeVM {
         self
     }
 
-    // Set input channel to read from.
+    /// Set input channel to read from.
     pub fn rx<'a>(&'a mut self, rx: mpsc::Receiver<DWord>) -> &'a mut Self {
         self.input = rx;
         self
     }
 
-    // Set output channel to write to.
+    /// Set output channel to write to.
     pub fn tx<'a>(&'a mut self, tx: mpsc::Sender<DWord>) -> &'a mut Self {
         self.output = tx;
         self
     }
 
+    /// Set timeout for input read.
     pub fn timeout<'a>(&'a mut self, dur: std::time::Duration) -> &'a mut Self {
         self.timeout = Some(dur);
         self
     }
 
-    // Connects this VM's output to other VM's input.
+    /// Connects this VM's output to other VM's input.
     pub fn wire<'a>(&'a mut self, other: &mut IntcodeVM) -> &'a mut Self {
         let (tx, rx) = mpsc::channel();
         self.output = tx;
@@ -121,7 +122,7 @@ impl IntcodeVM {
         self
     }
 
-    // Executes the VM and collects output into a vec.
+    /// Executes the VM and collects output into a vec.
     pub fn execute_and_collect(&mut self) -> Result<Vec<DWord>, IntcodeError> {
         let (tx, rx) = mpsc::channel();
         self.output = tx;
@@ -129,7 +130,7 @@ impl IntcodeVM {
         Ok(rx.try_iter().collect())
     }
 
-    // MAGICAL SMOKE MACHINE, read the docs @ https://adventofcode.com/2019/day/{2,5,7,9}.
+    /// MAGICAL SMOKE MACHINE, read the docs @ https://adventofcode.com/2019/day/{2,5,7,9}.
     pub fn execute(&mut self) -> Result<(), IntcodeError> {
         let mut ptr = 0;
         let mut base = 0;
@@ -239,7 +240,7 @@ impl IntcodeVM {
 }
 
 impl Clone for IntcodeVM {
-    // Warning: Due to single consumer limitation, clone of the VM actually has it's own channel.
+    /// Warning: Due to single consumer limitation, clone of the VM actually has it's own channel.
     fn clone(&self) -> Self {
         let (output, input) = mpsc::channel();
         Self{

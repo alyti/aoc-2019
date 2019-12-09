@@ -1,10 +1,8 @@
-/*
- * Link: https://adventofcode.com/2019/day/4
- * Day 4: Secure Container
- * 
- * You arrive at the Venus fuel depot only to discover it's protected by a password.
- * The Elves had written the password on a sticky note, but someone threw it out.
-*/
+//! Link: https://adventofcode.com/2019/day/4
+//! Day 4: Secure Container
+//! 
+//! You arrive at the Venus fuel depot only to discover it's protected by a password.
+//! The Elves had written the password on a sticky note, but someone threw it out.
 
 #[aoc_generator(day4)]
 fn input_generator(input: &str) -> (u32, u32){
@@ -25,15 +23,13 @@ fn increased_or_same(s: &str) -> bool {
     s.chars().zip(s.chars().skip(1)).all(|(c1, c2)| c1 <= c2)
 }
 
-/*
- * However, they do remember a few key facts about the password:
- * 
- * It is a six-digit number.
- * The value is within the range given in your puzzle input.
- * Two adjacent digits are the same (like 22 in 122345).
- * Going from left to right, the digits never decrease; 
- *  they only ever increase or stay the same (like 111123 or 135679).
-*/
+// However, they do remember a few key facts about the password:
+// 
+// It is a six-digit number.
+// The value is within the range given in your puzzle input.
+// Two adjacent digits are the same (like 22 in 122345).
+// Going from left to right, the digits never decrease; 
+//  they only ever increase or stay the same (like 111123 or 135679).
 #[aoc(day4, part1, Filter)]
 fn day4_part1_filter(input: &(u32, u32)) -> usize {
     let (from, to) = *input;
@@ -54,10 +50,8 @@ fn has_adjacent_part2(s: &str) -> bool {
         || (s[s.len() - 1] == s[s.len() - 2] && s[s.len() - 2] != s[s.len() - 3])
 }
 
-/*
- * An Elf just remembered one more important detail:
- *  the two adjacent matching digits are not part of a larger group of matching digits.
-*/
+// An Elf just remembered one more important detail:
+//  the two adjacent matching digits are not part of a larger group of matching digits.
 #[aoc(day4, part2, Filter)]
 fn day4_part2_filter(input: &(u32, u32)) -> usize {
     let (from, to) = *input;

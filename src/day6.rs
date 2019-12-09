@@ -1,16 +1,14 @@
-/*
- * Link: https://adventofcode.com/2019/day/6
- * Day 6: Universal Orbit Map
- *
- * You've landed at the Universal Orbit Map facility on Mercury.
- * Because navigation in space often involves transferring between orbits,
- *  the orbit maps here are useful for finding efficient routes between,
- *  for example, you and Santa. 
- * You download a map of the local orbits (your puzzle input).
- * 
- * Except for the universal Center of Mass (COM),
- *  every object in space is in orbit around exactly one other object.
-*/
+//! Link: https://adventofcode.com/2019/day/6
+//! Day 6: Universal Orbit Map
+//! 
+//! You've landed at the Universal Orbit Map facility on Mercury.
+//! Because navigation in space often involves transferring between orbits,
+//!  the orbit maps here are useful for finding efficient routes between,
+//!  for example, you and Santa. 
+//! You download a map of the local orbits (your puzzle input).
+//! 
+//! Except for the universal Center of Mass (COM),
+//!  every object in space is in orbit around exactly one other object.
 
 use std::str::FromStr;
 use std::collections::HashMap;
@@ -74,18 +72,14 @@ fn input_generator(input: &str) -> Option<Map> {
         })
 }
 
-/*
- * What is the total number of direct and indirect orbits in your map data?
-*/
+// What is the total number of direct and indirect orbits in your map data?
 #[aoc(day6, part1, Map)]
 fn solve_part1_map(input: &Map) -> i32 {
     input.from("COM").values().sum()
 }
 
-/*
- * What is the minimum number of orbital transfers required 
- *  to move from the object YOU are orbiting to the object SAN is orbiting?
-*/
+// What is the minimum number of orbital transfers required 
+//  to move from the object YOU are orbiting to the object SAN is orbiting?
 #[aoc(day6, part2, Map)]
 fn solve_part2_map(input: &Map) -> i32 {
     (*input.from("YOU").get("SAN").unwrap() - 2)

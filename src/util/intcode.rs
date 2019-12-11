@@ -60,15 +60,16 @@ impl std::convert::From<std::option::NoneError> for IntcodeError {
 
 pub struct IntcodeVM{
     state: BTreeMap<usize, DWord>,
-    input: mpsc::Receiver<DWord>,
-    output: mpsc::Sender<DWord>,
+    input: mpsc::Receiver<Option<DWord>>,
+    output: mpsc::Sender<Option<DWord>>,
     timeout: Option<std::time::Duration>,
 }
 
 impl IntcodeVM {
     /// Creates an IntcodeVM with given code as the initial state.
     pub fn new(code: Vec<DWord>) -> IntcodeVM {
-        let (output, input) = mpsc::channel();
+        let (output, _) = mpsc::channel();
+        let (_, input) = mpsc::channel();
         IntcodeVM{state: code.into_iter().enumerate().collect(), input, output, timeout: None}
     }
 
@@ -90,20 +91,20 @@ impl IntcodeVM {
         // TODO: Consider keeping track of thread and joining it at op99.
         std::thread::spawn(move || {
             for i in vec {
-                tx.send(i).unwrap();
+                tx.send(Some(i)).unwrap();
             }
         });
         self
     }
 
     /// Set input channel to read from.
-    pub fn rx<'a>(&'a mut self, rx: mpsc::Receiver<DWord>) -> &'a mut Self {
+    pub fn rx<'a>(&'a mut self, rx: mpsc::Receiver<Option<DWord>>) -> &'a mut Self {
         self.input = rx;
         self
     }
 
     /// Set output channel to write to.
-    pub fn tx<'a>(&'a mut self, tx: mpsc::Sender<DWord>) -> &'a mut Self {
+    pub fn tx<'a>(&'a mut self, tx: mpsc::Sender<Option<DWord>>) -> &'a mut Self {
         self.output = tx;
         self
     }
@@ -122,12 +123,19 @@ impl IntcodeVM {
         self
     }
 
+    /// Creates binding pair for IO for direct communication with the VM.
+    pub fn io(&mut self) -> (mpsc::Sender<Option<DWord>>, mpsc::Receiver<Option<DWord>>) {
+        let (userin, botin) = mpsc::channel();
+        let (botout, userout) = mpsc::channel();
+        self.rx(botin).tx(botout);
+        (userin, userout)
+    }
+
     /// Executes the VM and collects output into a vec.
     pub fn execute_and_collect(&mut self) -> Result<Vec<DWord>, IntcodeError> {
         let (tx, rx) = mpsc::channel();
-        self.output = tx;
-        self.execute()?;
-        Ok(rx.try_iter().collect())
+        self.tx(tx).execute()?;
+        Ok(rx.try_iter().filter_map(|a| a).collect())
     }
 
     /// MAGICAL SMOKE MACHINE, read the docs @ https://adventofcode.com/2019/day/{2,5,7,9}.
@@ -189,12 +197,12 @@ impl IntcodeVM {
                         Some(dur) => self.input.recv_timeout(dur)?,
                         None => self.input.recv()?,
                     };
-                    _write(&mut self.state, 1, dword);
+                    _write(&mut self.state, 1, dword.unwrap());
                     ptr += 2;
                 }
                 // send output to channel
                 4 => {
-                    self.output.send(_read(1))?;
+                    self.output.send(Some(_read(1))).expect("failed to send");
                     ptr += 2;
                 }
                 // jump if true

@@ -10,6 +10,7 @@
 //! While BOOST (your puzzle input) is capable of boosting your sensors, 
 //!  for tenuous safety reasons, it refuses to do so until the computer it runs on
 //!  passes some checks to demonstrate it is a complete Intcode computer.
+
 use failure::Error;
 use std::str::FromStr;
 use crate::util::intcode::IntcodeVM;

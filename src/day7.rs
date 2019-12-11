@@ -87,16 +87,16 @@ fn solve_part2_map(vm: &IntcodeVM) -> Option<i64> {
             let mut rx = std::collections::VecDeque::new();
             let mut tx = std::collections::VecDeque::new();
             for _ in 0..=5 {
-                let (t, r) = std::sync::mpsc::channel();
+                let (t, r) = std::sync::mpsc::channel::<Option<i64>>();
                 rx.push_back(r);
                 tx.push_back(t);
             }
             for (stage, t) in stages.iter().zip(tx.iter()) {
-                t.send(*stage).unwrap();
+                t.send(Some(*stage)).unwrap();
             }
             let txa = tx.pop_front().unwrap();
             let rxe = rx.pop_back().unwrap();
-            txa.send(0).unwrap();
+            txa.send(Some(0)).unwrap();
             for (r, t) in rx.into_iter().zip(tx.into_iter()) {
                 let mut amp = vm.clone();
                 amp.rx(r).tx(t);
@@ -104,7 +104,7 @@ fn solve_part2_map(vm: &IntcodeVM) -> Option<i64> {
             }
             let mut last = -1;
             for z in rxe {
-                last = z;
+                last = z.unwrap();
                 let _ = txa.send(z);
             }
             last

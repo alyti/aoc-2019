@@ -16,3 +16,8 @@ failure = "^0.1"
 
 # day7 dependencies
 permutohedron = "0.2"
+
+# day12 and onwards
+pest = "2.0"
+pest_derive = "2.0"
+num-integer = "0.1"

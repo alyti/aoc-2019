@@ -1,0 +1,3 @@
+coord = { "-"? ~ ASCII_DIGIT+ }
+moon = { "<x=" ~ coord ~ ", y=" ~ coord ~ ", z=" ~ coord ~ ">" }
+moon_list = { SOI ~ moon ~ (NEWLINE ~ moon)* ~ EOI }

@@ -12,7 +12,7 @@
 //!     surely there are enough spare parts up there to build a new Intcode computer!"
 
 use std::str::FromStr;
-use crate::util::intcode::IntcodeVM;
+use crate::common::intcode_old::IntcodeVM;
 
 // Magic smoke
 fn run_intcode(inputs: &str, a: i64, b: i64) -> i64 {

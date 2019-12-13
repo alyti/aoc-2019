@@ -239,7 +239,10 @@ impl IntcodeVM {
                     ptr += 2;
                 }
                 // stopcode
-                99 => return Ok(()),
+                99 => {
+                        self.output.send(None).unwrap();
+                        return Ok(())
+                    },
                 // behave, user.
                 _ => return Err(IntcodeError::UnknownOpcode{opcode: opcode, position: ptr})
             }

@@ -13,7 +13,7 @@
 
 use failure::Error;
 use std::str::FromStr;
-use crate::util::intcode::IntcodeVM;
+use crate::common::intcode_old::IntcodeVM;
 
 #[aoc_generator(day9)]
 fn input_generator(input: &str) -> IntcodeVM {

@@ -14,7 +14,7 @@
 //! There's just one problem: you don't have an emergency hull painting robot.
 
 use std::collections::HashMap;
-use crate::util::intcode::IntcodeVM;
+use crate::common::intcode_old::IntcodeVM;
 use std::str::FromStr;
 use failure::Error;
 

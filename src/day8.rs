@@ -11,7 +11,7 @@
 //! The Elf responsible for the rover takes a picture of the password (your puzzle input)
 //!  and sends it to you via the Digital Sending Network.
 
-use crate::util::sif::{SpaceImage, draw_layer};
+use crate::common::sif::{SpaceImage, draw_layer};
 
 // Unfortunately,
 //  images sent via the Digital Sending Network aren't encoded with any normal encoding;

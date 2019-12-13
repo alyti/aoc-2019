@@ -6,7 +6,7 @@
 //! To do this, you'll need to configure a series of amplifiers already installed on the ship.
 
 use std::str::FromStr;
-use crate::util::intcode::IntcodeVM;
+use crate::common::intcode_old::IntcodeVM;
 use permutohedron::Heap;
 
 #[aoc_generator(day7)]

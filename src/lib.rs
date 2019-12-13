@@ -9,7 +9,7 @@ extern crate pest;
 extern crate gen_iter;
 extern crate num_integer;
 
-pub mod util;
+pub mod common;
 
 pub mod day1;
 pub mod day2;
@@ -23,5 +23,6 @@ pub mod day9;
 pub mod day10;
 pub mod day11;
 pub mod day12;
+pub mod day13;
 
 aoc_lib!{ year = 2019 }

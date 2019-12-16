@@ -11,7 +11,7 @@ pub enum State {
     Halted,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Intcode {
     pc: usize,
     state: State,
